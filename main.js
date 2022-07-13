@@ -457,7 +457,6 @@ function removemovie(){
       localStorage.setItem("Movies", JSON.stringify(filteredList))*/ 
 /* Delete certain value in Array
     function arrayRemove(arr, value) { 
-    
         return arr.filter(function(ele){ 
             return ele != value; 
         });
