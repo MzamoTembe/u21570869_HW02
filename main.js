@@ -179,10 +179,8 @@ function displayCards(){
         Object.values(movieitems).map(movie => {
             moviecard.innerHTML  += 
                 `    
-                <!--TheBatman-->
-                <!--Card-->
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card  h-100">
+                    <div class="card  h-100 ">
                         <div class="card-header">
                         Cinema ${movie.id}
                         </div>
@@ -197,52 +195,42 @@ function displayCards(){
                         <div class="card-footer">
                             <!--CardFooter-->
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movie">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#${movie.modalid}">
                                 Details
                             </button>
                             <button type="button" class="btn btn-success">Add to Cart</button>
                             <!-- ActualModal -->
-                            <div class="modal fade" id= "movie">
-                                <div class="modal-dialog" id = "mo">
+                            <div class="modal fade" id = "${movie.modalid}">
+                                <div class="modal-dialog 1" >
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="movie"> ${movie.title}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <dl class="row">
+                                        <dt class="col-sm-3">Title</dt>
+                                        <dd class="col-sm-9">${movie.title}</dd>
+                                        <dt class="col-sm-3">Director</dt>
+                                        <dd class="col-sm-9">${movie.director}</dd>
+                                        <dt class="col-sm-3">Release Year</dt>
+                                        <dd class="col-sm-9">${movie.release_year}</dd>
+                                        <dt class="col-sm-3">Runtime</dt>
+                                        <dd class="col-sm-9"> ${movie.runtime}</dd>
+                                    </dl>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                                </div>
                                 </div>
                             </div>
                             <!--BookTicket Button-->
                         </div>
                     </div>
                 </div>
-                <!--EndofCard-->
-                           `                             
+                 `                             
         });
-
-// Add iinformation to modal
-myModalEl = document.getElementById("movie");
-Object.values(movieitems).map(modal => {
-   myModalEl.addEventListener('shown.bs.modal', function (event) {
-       var moviemodal = document.getElementById("mo")
-       moviemodal.innerHTML += `
-       <div class="modal-content">
-                   <div class="modal-header">
-                       <h5 class="modal-title" id="movie"> ${modal.title}</h5>
-                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                   </div>
-                   <div class="modal-body">
-                       <dl class="row">
-                           <dt class="col-sm-3">Title</dt>
-                           <dd class="col-sm-9">${modal.title}</dd>
-                           <dt class="col-sm-3">Director</dt>
-                           <dd class="col-sm-9">${modal.director}</dd>
-                           <dt class="col-sm-3">Release Year</dt>
-                           <dd class="col-sm-9">${modal.release_year}</dd>
-                           <dt class="col-sm-3">Runtime</dt>
-                           <dd class="col-sm-9"> ${modal.runtime}</dd>
-                       </dl>
-                   </div>
-                   <div class="modal-footer">
-                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                   </div>
-                   </div>
-               `;})  
-           });
     }
 }
 /* Display Cards To LocalStorage */
@@ -376,7 +364,6 @@ function displayCart(){
                     const btn = e.target;
                     btn.closest("tr").remove();
                     deletemovie(movie);
-                    removemovie();
                     location.reload();
                 }
         });
@@ -425,6 +412,7 @@ function decrease(decremented){
         localStorage.setItem("TotalCost", JSON.stringify(cartTotal))
 }
 function deletemovie(cartmovies){
+    let movieidd = cartmovies.id;
     let cartItems = localStorage.getItem("moviesInCart");
     cartItems = JSON.parse(cartItems);
     let cartTotal = localStorage.getItem("TotalCost");
@@ -439,37 +427,23 @@ function deletemovie(cartmovies){
     localStorage.setItem("tickets_in_cart", newtickets)
     cartItems[cartmovies.id].tickets_in_cart = cartItems[cartmovies.id].tickets_in_cart - cartItems[cartmovies.id].tickets_in_cart;
     localStorage.setItem("moviesInCart", JSON.stringify(cartItems));
+    removemovie(movieidd);
 }
 
 // Remove movie from movies in cart key
-function removemovie(){
-    console.log("movie has been removed");
-}
+function removemovie(id){
+    let cartItems = localStorage.getItem("moviesInCart");
+    cartItems = JSON.parse(cartItems);
+    let results = [];
+    for (var i in cartItems){
+        if(i == id){
 
-/*Extra Code----------------------------------------------------------------------------------------------------------
-// {Problem to be solved is the parentclass thing}
-/* Deletes certain values in localStorage Values (iTems)
-      const list = Object.keys(cartItems).map(key => ({
-        [key]: cartItems[key]
-      }));
-      const filteredList = list.filter(item => Object.keys(item)[0] !== '1');
-      console.log(filteredList)
-      localStorage.setItem("Movies", JSON.stringify(filteredList))*/ 
-/* Delete certain value in Array
-    function arrayRemove(arr, value) { 
-        return arr.filter(function(ele){ 
-            return ele != value; 
-        });
+        }else{
+           results.push(cartItems[i]);
+        }
+        console.log(i)
+        console.log(x)
     }
-/* Delete Row
-const tableEL = document.querySelector("table");
-tableEL.addEventListener("click", onDeleteRow);
-function onDeleteRow(e){
-    if (!e.target.classList.contains("dope")){
-        return;
-    }
-    const btn = e.target;
-    btn.closest("tr").remove();
-    deletemovie();
+    console.log(results);
+    localStorage.setItem("moviesInCart", JSON.stringify(results))
 }
-*/
